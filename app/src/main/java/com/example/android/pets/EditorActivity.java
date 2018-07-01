@@ -17,8 +17,6 @@ package com.example.android.pets;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -123,20 +121,17 @@ public class EditorActivity extends AppCompatActivity {
         String gender=mGenderSpinner.getSelectedItem().toString();
         String weight=mWeightEditText.getText().toString().trim();
 
-        if(name!=null && breed!=null && weight!=null){
-            ContentValues values =new ContentValues();
-            values.put(PetEntry.COLUMN_NAME,name);
-            values.put(PetEntry.COLUMN_BREED,breed);
-            values.put(PetEntry.COLUMN_GENDER,gender);
-            values.put(PetEntry.COLUMN_WEIGHT,weight);
+        ContentValues values =new ContentValues();
+        values.put(PetEntry.COLUMN_NAME,name);
+        values.put(PetEntry.COLUMN_BREED,breed);
+        values.put(PetEntry.COLUMN_GENDER,gender);
+        values.put(PetEntry.COLUMN_WEIGHT,weight);
 
-            long id= ContentUris.parseId(getContentResolver().insert(PetEntry.CONTENT_URI,values));
-            if (id==-1){
-                Toast.makeText(this,"error in entering data",Toast.LENGTH_SHORT).show();
-            }
+
+        long id= ContentUris.parseId(getContentResolver().insert(PetEntry.CONTENT_URI,values));
+        if (id==-1){
+            Toast.makeText(this,"error in entering data",Toast.LENGTH_SHORT).show();
         }
-        else
-            Toast.makeText(this,"Enter all fields",Toast.LENGTH_SHORT).show();
     }
 
     @Override
