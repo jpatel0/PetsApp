@@ -71,14 +71,22 @@ public class CatalogActivity extends AppCompatActivity {
         // Create and/or open a database to read from it
         SQLiteDatabase db = mdbHelper.getReadableDatabase();
 
-        // Perform this raw SQL query "SELECT * FROM pets"
-        // to get a Cursor that contains all rows from the pets table.
-        Cursor cursor = db.rawQuery("SELECT * FROM " + PetEntry.TABLE_NAME, null);
+        String[] projection={PetEntry._ID,PetEntry.COLUMN_NAME,PetEntry.COLUMN_GENDER,PetEntry.COLUMN_WEIGHT};
+
+        Cursor cursor=db.query(PetEntry.TABLE_NAME,projection,null,null,null,null,null);
+
+        TextView displayView=(TextView) findViewById(R.id.text_view_pet);
+        displayView.setText("Number of rows in pets database table: " + cursor.getCount());
+
+        String id,name,gender,weight;
         try {
-            // Display the number of rows in the Cursor (which reflects the number of rows in the
-            // pets table in the database).
-            TextView displayView = (TextView) findViewById(R.id.text_view_pet);
-            displayView.setText("Number of rows in pets database table: " + cursor.getCount());
+            while (cursor.moveToNext()){
+                id=cursor.getString(cursor.getColumnIndex(PetEntry._ID));
+                name=cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_NAME));
+                gender=cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_GENDER));
+                weight=cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_WEIGHT));
+                displayView.append("\n" + id + "\t" + name + "\t" + gender + "\t" + weight );
+            }
         } finally {
             // Always close the cursor when you're done reading from it. This releases all its
             // resources and makes it invalid.

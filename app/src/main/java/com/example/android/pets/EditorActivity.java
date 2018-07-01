@@ -132,11 +132,6 @@ public class EditorActivity extends AppCompatActivity {
             long id=db.insert(PetEntry.TABLE_NAME,null,values);
             if (id==-1){
                 Toast.makeText(this,"error in entering data",Toast.LENGTH_SHORT).show();
-
-            }
-            else{
-                Intent goBack=new Intent(this,CatalogActivity.class);
-                startActivity(goBack);
             }
         }
         else
@@ -158,6 +153,7 @@ public class EditorActivity extends AppCompatActivity {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 insertPet();
+                finish();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
