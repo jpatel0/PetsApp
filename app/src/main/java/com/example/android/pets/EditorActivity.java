@@ -15,6 +15,7 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -128,8 +129,8 @@ public class EditorActivity extends AppCompatActivity {
             values.put(PetEntry.COLUMN_BREED,breed);
             values.put(PetEntry.COLUMN_GENDER,gender);
             values.put(PetEntry.COLUMN_WEIGHT,weight);
-            SQLiteDatabase db=mDbHelper.getWritableDatabase();
-            long id=db.insert(PetEntry.TABLE_NAME,null,values);
+
+            long id= ContentUris.parseId(getContentResolver().insert(PetEntry.CONTENT_URI,values));
             if (id==-1){
                 Toast.makeText(this,"error in entering data",Toast.LENGTH_SHORT).show();
             }

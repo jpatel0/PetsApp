@@ -15,10 +15,12 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -33,6 +35,7 @@ import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract.PetEntry;
 import com.example.android.pets.data.PetDbHelper;
+import com.example.android.pets.data.PetProvider;
 
 /**
  * Displays list of pets that were entered and stored in the app.
@@ -65,15 +68,11 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void displayDatabaseInfo() {
-        // To access our database, we instantiate our subclass of SQLiteOpenHelper
-        // and pass the context, which is the current activity.
 
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mdbHelper.getReadableDatabase();
 
         String[] projection={PetEntry._ID,PetEntry.COLUMN_NAME,PetEntry.COLUMN_GENDER,PetEntry.COLUMN_WEIGHT};
 
-        Cursor cursor=db.query(PetEntry.TABLE_NAME,projection,null,null,null,null,null);
+        Cursor cursor=getContentResolver().query(PetEntry.CONTENT_URI,projection,null,null,null,null);
 
         TextView displayView=(TextView) findViewById(R.id.text_view_pet);
         displayView.setText("Number of rows in pets database table: " + cursor.getCount());
@@ -97,14 +96,14 @@ public class CatalogActivity extends AppCompatActivity {
 
     public void insertPet(){
         ContentValues values =new ContentValues();
-        values.put(PetEntry.COLUMN_NAME,"zero");
+        values.put(PetEntry.COLUMN_NAME,"jze");
         values.put(PetEntry.COLUMN_BREED,"human");
         values.put(PetEntry.COLUMN_GENDER,PetEntry.GENDER_MALE);
         values.put(PetEntry.COLUMN_WEIGHT,"50");
 
 
-        SQLiteDatabase db=mdbHelper.getWritableDatabase();
-        long id=db.insert(PetEntry.TABLE_NAME,null,values);
+        Uri insertUri=getContentResolver().insert(PetEntry.CONTENT_URI,values);
+        long id=ContentUris.parseId(insertUri);
         if(id==-1){
             Toast.makeText(this,"Unable to enter data",Toast.LENGTH_SHORT).show();
         }

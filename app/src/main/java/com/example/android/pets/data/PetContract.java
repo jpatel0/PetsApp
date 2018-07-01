@@ -1,5 +1,6 @@
 package com.example.android.pets.data;
 
+import android.content.UriMatcher;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -16,7 +17,7 @@ public final class PetContract {
 
     public static final class PetEntry implements BaseColumns{
 
-        public static final Uri PET_URI=Uri.withAppendedPath(BASE_CONTENT_URI,PATH_PET);
+        public static final Uri CONTENT_URI=Uri.withAppendedPath(BASE_CONTENT_URI,PATH_PET);
 
         public final static String TABLE_NAME = "pets";
         public final static String _ID = BaseColumns._ID;
