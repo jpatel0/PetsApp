@@ -189,7 +189,7 @@ public class PetProvider extends ContentProvider {
         // If the {@link PetEntry#COLUMN_PET_GENDER} key is present,
         // check that the gender value is valid.
         if (values.containsKey(PetEntry.COLUMN_GENDER)) {
-            Integer gender = values.getAsInteger(PetEntry.COLUMN_GENDER);
+            String gender = values.getAsString(PetEntry.COLUMN_GENDER);
             if (gender == null) {
                 throw new IllegalArgumentException("Pet requires valid gender");
             }

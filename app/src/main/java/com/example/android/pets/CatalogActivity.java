@@ -67,7 +67,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
             public void onItemClick(AdapterView<?> adapterView, View item, int position, long id) {
                 Intent editIntent=new Intent();
                 editIntent.setClass(getApplicationContext(),EditorActivity.class);
-                editIntent.setData(Uri.withAppendedPath(PetEntry.CONTENT_URI,String.valueOf(id)));
+                editIntent.setData(ContentUris.withAppendedId(PetEntry.CONTENT_URI,id));
                 startActivity(editIntent);
             }
         });
