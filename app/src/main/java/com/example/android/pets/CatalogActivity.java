@@ -54,6 +54,9 @@ public class CatalogActivity extends AppCompatActivity {
             }
         });
 
+        View emptyView =findViewById(R.id.empty_view);
+        ListView listView=(ListView) findViewById(R.id.listView);
+        listView.setEmptyView(emptyView);
     }
 
     @Override
@@ -69,8 +72,8 @@ public class CatalogActivity extends AppCompatActivity {
         Cursor cursor = getContentResolver().query(PetEntry.CONTENT_URI, projection, null, null, null, null);
         ListView listView = (ListView) findViewById(R.id.listView);
 
-            PetCursorAdapter cursorAdapter = new PetCursorAdapter(this, cursor);
-            listView.setAdapter(cursorAdapter);
+        PetCursorAdapter cursorAdapter = new PetCursorAdapter(this, cursor);
+        listView.setAdapter(cursorAdapter);
 
     }
 
