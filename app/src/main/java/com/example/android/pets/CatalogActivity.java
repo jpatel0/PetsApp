@@ -15,29 +15,30 @@
  */
 package com.example.android.pets;
 
+import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract.PetEntry;
-import com.example.android.pets.data.PetDbHelper;
 
-/**
- * Displays list of pets that were entered and stored in the app.
- */
-public class CatalogActivity extends AppCompatActivity {
+
+public class CatalogActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+
+    PetCursorAdapter cursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,24 +58,38 @@ public class CatalogActivity extends AppCompatActivity {
         View emptyView =findViewById(R.id.empty_view);
         ListView listView=(ListView) findViewById(R.id.listView);
         listView.setEmptyView(emptyView);
+
+        cursorAdapter=new PetCursorAdapter(this,null);
+        listView.setAdapter(cursorAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View item, int position, long id) {
+                Intent editIntent=new Intent();
+                editIntent.setClass(getApplicationContext(),EditorActivity.class);
+                editIntent.setData(Uri.withAppendedPath(PetEntry.CONTENT_URI,String.valueOf(id)));
+                startActivity(editIntent);
+            }
+        });
+        getLoaderManager().initLoader(1,null,this);
+    }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String[] projection = {PetEntry._ID, PetEntry.COLUMN_NAME, PetEntry.COLUMN_BREED};
+        return new CursorLoader(this,PetEntry.CONTENT_URI,projection,null,null,null);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        displayDatabaseInfo();
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        cursorAdapter.swapCursor(cursor);
+
     }
 
-    private void displayDatabaseInfo() {
-
-        String[] projection = {PetEntry._ID, PetEntry.COLUMN_NAME, PetEntry.COLUMN_BREED, PetEntry.COLUMN_GENDER, PetEntry.COLUMN_WEIGHT};
-
-        Cursor cursor = getContentResolver().query(PetEntry.CONTENT_URI, projection, null, null, null, null);
-        ListView listView = (ListView) findViewById(R.id.listView);
-
-        PetCursorAdapter cursorAdapter = new PetCursorAdapter(this, cursor);
-        listView.setAdapter(cursorAdapter);
-
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        cursorAdapter.swapCursor(null);
     }
 
 
@@ -91,7 +106,6 @@ public class CatalogActivity extends AppCompatActivity {
         if(id==-1){
             Toast.makeText(this,"Unable to enter data",Toast.LENGTH_SHORT).show();
         }
-        displayDatabaseInfo();
     }
 
     @Override
