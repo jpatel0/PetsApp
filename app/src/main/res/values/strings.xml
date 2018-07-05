@@ -97,5 +97,7 @@
 
     <string name="cancel_deleting">Cancel</string>
 
+    <string name="unknown_breed">Unknown Breed</string>
+
 
 </resources>

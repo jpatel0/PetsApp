@@ -182,10 +182,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             Toast.makeText(this,"Name field is empty",Toast.LENGTH_SHORT).show();
         }
 
-        else if(TextUtils.isEmpty(breed)){
-            Toast.makeText(this,"Breed field is empty",Toast.LENGTH_SHORT).show();
-        }
-
         else if(mGenderSpinner.getSelectedItem().equals(getString(R.string.gender_unknown))){
             Toast.makeText(this,"Select a gender",Toast.LENGTH_SHORT).show();
         }

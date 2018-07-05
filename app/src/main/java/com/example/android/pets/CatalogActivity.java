@@ -160,7 +160,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     }
 
     private void deletePet() {
-        // TODO: Implement this method
         int rowDeleted=getContentResolver().delete(PetEntry.CONTENT_URI,null,null);
         if(rowDeleted<=0){
 
