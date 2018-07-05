@@ -67,4 +67,11 @@
     <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
     <string name="empty_view_subtitle_text">Get started by adding a pet</string>
 
+
+    <string name="discard_changes_button">Discard</string>
+
+    <string name="keep_editing_button">Keep Editing</string>
+
+    <string name="dialog_message">Discard any changes?</string>
+
 </resources>
