@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -39,11 +40,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract.PetEntry;
-import com.example.android.pets.data.PetDbHelper;
 
-/**
- * Allows user to create a new pet or edit an existing one.
- */
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private EditText mNameEditText;
@@ -75,7 +72,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
 
         uri=getIntent().getData();
-
         if(uri==null)
             setTitle("Add a Pet");
         else {
@@ -107,6 +103,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        if (cursor == null || cursor.getCount() == 0)
+            return;
         cursor.moveToNext();
         mNameEditText.setText(cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_NAME)));
         mBreedEditText.setText(cursor.getString(cursor.getColumnIndex(PetEntry.COLUMN_BREED)));
@@ -146,7 +145,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Specify dropdown layout style - simple list view with 1 item per line
         genderSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 
-        // Apply the adapter to the spinner
         mGenderSpinner.setAdapter(genderSpinnerAdapter);
 
         // Set the integer mSelected to the constant values
@@ -226,17 +224,18 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
-            // Respond to a click on the "Save" menu option
+
             case R.id.action_save:
                 savePet();
                 return true;
-            // Respond to a click on the "Delete" menu option
+
             case R.id.action_delete:
-                // Do nothing for now
+                if(uri!=null)
+                showDeleteConfirmationDialog();
                 return true;
-            // Respond to a click on the "Up" arrow button in the app bar
+
             case android.R.id.home:
-                // Navigate back to parent activity (CatalogActivity)
+
                 if(!isPetChanged) {
                     NavUtils.navigateUpFromSameTask(this);
                     return true;
@@ -252,6 +251,40 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                deletePet();
+                finish();
+            }
+        });
+
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void deletePet() {
+        // TODO: Implement this method
+        int rowDeleted=getContentResolver().delete(uri,null,null);
+        if(rowDeleted<=0){
+
+           Toast.makeText(EditorActivity.this,R.string.editor_delete_pet_failed,Toast.LENGTH_LONG).show();
+        }
+        else
+            Toast.makeText(EditorActivity.this,R.string.editor_delete_pet_successful,Toast.LENGTH_LONG).show();
     }
 
 
