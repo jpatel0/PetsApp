@@ -287,7 +287,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             Toast.makeText(EditorActivity.this,R.string.editor_delete_pet_successful,Toast.LENGTH_LONG).show();
     }
 
-
     @Override
     public void onBackPressed() {
         if(!isPetChanged) {

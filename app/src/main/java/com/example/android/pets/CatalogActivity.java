@@ -15,10 +15,12 @@
  */
 package com.example.android.pets;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -118,17 +120,55 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // User clicked on a menu option in the app bar overflow menu
+
         switch (item.getItemId()) {
-            // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
                 insertPet();
                 return true;
-            // Respond to a click on the "Delete all entries" menu option
+
             case R.id.action_delete_all_entries:
-                // Do nothing for now
+                if(cursorAdapter.isEmpty()){
+                    Toast.makeText(this,"No pets found to be deleted",Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                showDeleteConfirmationDialog();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.delete_all_pets_title);
+        builder.setMessage(R.string.delete_all_pets_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                deletePet();
+            }
+        });
+
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void deletePet() {
+        // TODO: Implement this method
+        int rowDeleted=getContentResolver().delete(PetEntry.CONTENT_URI,null,null);
+        if(rowDeleted<=0){
+
+            Toast.makeText(this,R.string.editor_delete_pet_failed,Toast.LENGTH_LONG).show();
+        }
+        else
+            Toast.makeText(this,R.string.editor_delete_pet_successful,Toast.LENGTH_LONG).show();
+    }
+
+
 }
